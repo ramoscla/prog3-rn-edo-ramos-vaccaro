@@ -6,18 +6,21 @@ class Post extends Component {
         super(props);
         this.state = {
             
+            
         };
     }
+    
+
 
 
     render(){
         return(
             <View>
-                <Text></Text>
-
-                    
+                <Text> Post </Text>
             </View>
         )
+        
+           
     }
 
 }
