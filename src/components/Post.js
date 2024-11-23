@@ -9,6 +9,7 @@ class Post extends Component {
         super(props);
         this.state = {
             liked: false,
+            amountLikes: 0
             
         };
     }
