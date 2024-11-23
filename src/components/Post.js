@@ -18,7 +18,9 @@ class Post extends Component {
     render(){
         return(
             <View>
-                <Text> Post </Text>
+                <Text> Posteado por: {this.props.postInfo.data.owner} </Text>
+                <Text> {this.props.postInfo.data.description} </Text>
+                <Text> { new Date(this.props.postInfo.data.createdAt).toLocaleString()} </Text>
             </View>
         )
         
