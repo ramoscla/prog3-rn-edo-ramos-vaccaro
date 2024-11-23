@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
+import { auth, db } from '../firebase/config';
 
 
 class NewPost extends Component {
@@ -8,21 +9,33 @@ class NewPost extends Component {
         super(props);
         this.state = {
             descPost: "",
+            error: "",
         };
     }
 
     createPost(descPost){
+        if (!auth.currentUser) {
+            this.setState({ error: "Tu usuario no esta autenticado" });
+            return;
+        }
         if (descPost === ""){
-            alert("Ingresa una descripción para poder crear un post");
+            this.setState({ error: "Ingresa una descripción para poder crear un post" });
             return;
         }
         db.collection("posts").add({
            owner: auth.currentUser.email,
            createdAt: Date.now(),
-           desciption: descPost
+           description: descPost
         })
+        .then(() => {
+            this.setState({ descPost: "", error: "" });
+        })
+        .catch((error) => {
+            this.setState({ error: "Hubo un problema al crear el post. Intente denuevo." });
+        });
 
     }
+
     render(){
         return(
             <View>
@@ -30,16 +43,19 @@ class NewPost extends Component {
                 <View>
                     <TextInput 
                     style={styles.input}
-                    placeholder='Agregar una descripcion para tu post'
+                    placeholder='Agrega una descripción para tu post'
                     value= {this.state.descPost}
                     onChangeText= {(text) => this.setState({descPost: text})}
                     />
                     <TouchableOpacity onPress={()=> this.createPost(this.state.descPost)}>
+                    {console.log('Botón presionado')}
                         <Text>
                             Crear Post
                         </Text>
                     </TouchableOpacity>
-
+                    {this.state.error !== "" && (
+                     <Text>{this.state.error}</Text>
+                    )}
                 </View>
             </View>
         )
@@ -52,7 +68,6 @@ const styles = StyleSheet.create({
         borderColor: "black",
         marginBottom: 10
     }
-    
 })
 
 export default NewPost;
