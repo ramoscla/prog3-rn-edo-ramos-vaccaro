@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, TouchableOpacit, StyleSheet} from 'react-native';
 import { auth, db } from '../firebase/config';
 import { FlatList } from 'react-native-web';
 import Post from "../components/Post"
@@ -37,33 +37,36 @@ class Home extends Component {
     render() {
 
             return(
-               
-                <View>
-
+                <View style={styles.container}>
                 {this.state.loading ? (
-                    <Text> Cargando posts... </Text>
-                ) : this.state.posts.length === 0  ? (
+                    <Text>Cargando posts...</Text>
+                ) : this.state.posts.length === 0 ? (
                     <Text>No hay posts aún</Text>
                 ) : (
                     <FlatList
-                        data={this.state.posts} 
+                        data={this.state.posts}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <Post postInfo={item} /> 
+                            <Post postInfo={item} />
                         )}
+                        style={{ flex: 1 }} 
                     />
                 )}
-
-        
-                </View>
-            );
-
-        }
-        
-  
+            </View>
+        );
     }
+}
 
-
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#fff',
+    },
+});
 
 export default Home;
-
+               
+            

@@ -15,7 +15,7 @@ class Post extends Component {
     }
 
     componentDidMount(){
-        console.log(this.props.postIndfo);
+
         if(this.props.postInfo.data.likes.includes(auth.currentUser.email)){
             this.setState({
                 liked: true,
@@ -55,35 +55,85 @@ class Post extends Component {
     
     render(){
         return(
-            <View>
-                <Text> Posteado por: {this.props.postInfo.data.owner} </Text>
-                <Text> {this.props.postInfo.data.description} </Text>
-                <Text> { new Date(this.props.postInfo.data.createdAt).toLocaleString()} </Text>
+            <View style={styles.container}>
+            <Text style={styles.ownerText}>Posteado por: {this.props.postInfo.data.owner}</Text>
+            <Text style={styles.descriptionText}>{this.props.postInfo.data.description}</Text>
+            <Text style={styles.dateText}>{ new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
 
+            <View style={styles.likeContainer}>
                 {
                     this.state.liked ? (
-                        <TouchableOpacity onPress={() => this.dislike()}>
-                            <Text>
-                            Ya no me gusta
-                            </Text>
-                        
-                        </TouchableOpacity> ) :(
-                        <TouchableOpacity onPress={() => this.like()}>
-                            <Text>
-                            Me gusta
-                            </Text>
-                         
-                         </TouchableOpacity>)        
-            
+                        <TouchableOpacity style={styles.likeButton} onPress={() => this.dislike()}>
+                            <Text style={styles.likeText}>Ya no me gusta</Text>
+                        </TouchableOpacity> 
+                    ) : (
+                        <TouchableOpacity style={styles.likeButton} onPress={() => this.like()}>
+                            <Text style={styles.likeText}>Me gusta</Text>
+                        </TouchableOpacity>
+                    )
                 }
-                <Text> Cantidad de likes: {this.state.amountLikes} </Text>
             </View>
-
-        )
-        
-           
-    }
-
+            <Text style={styles.likesCount}>Cantidad de likes: {this.state.amountLikes}</Text>
+        </View>
+    );
 }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+        marginBottom: 20,
+        backgroundColor: '#f9f9f9',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+        marginTop: 10,
+    },
+    ownerText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 8,
+    },
+    descriptionText: {
+        fontSize: 18,
+        color: '#333',
+        marginBottom: 12,
+        lineHeight: 24,
+    },
+    dateText: {
+        fontSize: 14,
+        color: '#888',
+        marginBottom: 16,
+    },
+    likeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    likeButton: {
+        backgroundColor: '#FF5A5F',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 30,
+        marginRight: 12,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 2,
+    },
+    likeText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    likesCount: {
+        fontSize: 16,
+        color: '#333',
+        fontWeight: 'bold',
+    }
+});
 
 export default Post;
