@@ -16,11 +16,11 @@ class Post extends Component {
 
     componentDidMount(){
 
-        if(this.props.postInfo.data.likes.includes(auth.currentUser.email)){
+        if (auth.currentUser && this.props.postInfo.data.likes.includes(auth.currentUser.email)) {
             this.setState({
                 liked: true,
                 amountLikes: this.props.postInfo.data.likes.length,
-            })
+            });
         }
     }
 
