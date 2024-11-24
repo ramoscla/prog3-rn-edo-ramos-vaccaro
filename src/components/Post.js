@@ -9,7 +9,7 @@ class Post extends Component {
         super(props);
         this.state = {
             liked: false,
-            amountLikes: 0
+            amountLikes: this.props.postInfo.data.likes.length
             
         };
     }
@@ -19,7 +19,7 @@ class Post extends Component {
         if(this.props.postInfo.data.likes.includes(auth.currentUser.email)){
             this.setState({
                 liked: true,
-                amountLikes: 0,
+                amountLikes: this.props.postInfo.data.likes.length,
             })
         }
     }
