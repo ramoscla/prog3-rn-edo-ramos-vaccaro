@@ -17,107 +17,127 @@ class Register extends Component {
         };
     }
 
-    componentDidMount(){
-        auth.onAuthStateChanged( user => {
-            if(user == null){
-            this.setState({loggedIn: false})
-            console.log("no logueado")
+    componentDidMount() {
+        auth.onAuthStateChanged(user => {
+            if (user == null) {
+                this.setState({ loggedIn: false })
+                console.log("no logueado")
             }
-            else{
-                this.setState({loggedIn: true})
+            else {
+                this.setState({ loggedIn: true })
                 console.log("logueado")
-            }              
+            }
         })
     }
 
     register(email, pass, user) {
-        if (user !== "") {
-            auth.createUserWithEmailAndPassword(email, pass)
-            db.collection('users').add({
-                email: email,
-                username: user,
-                createdAt: Date.now()
+
+        auth.createUserWithEmailAndPassword(email, pass)
+
+            .then(response => {
+                this.setState({ registered: true });
+                this.setState({ loggedIn: true });
+                this.props.navigation.navigate("HomeMenu");
             })
-                .then(response => {
-                    this.setState({ registered: true });
-                    this.setState({ loggedIn: true });
-                    this.props.navigation.navigate("HomeMenu");
-                })
-                .catch(error => {
+            .catch(error => {
+                if (user == "") {
+                    this.setState({ error: 'El campo username es obligatorio' });
+                    console.log(this.state.error)
+
+                }
+                else if (error.code === 'auth/email-already-in-use') {
+                    this.setState({ error: 'El email ya esta en uso' });
+                    console.log(this.state.error)
+                }
+                else if (error.code === 'auth/weak-password') {
+                    this.setState({ error: 'La contraseña debe tener al menos 6 caracteres' });
+                    console.log(this.state.error)
+                }
+                else if (error.code === 'auth/invalid-email') {
+                    this.setState({ error: 'email mal formateado' });
+                    console.log(this.state.error)
+                }
+                else {
                     this.setState({ error: error.message });
-                });
-        }
-        else {
-            this.setState({ error: "El campo username es obligatorio" });
-        }
+                    console.log(error)
+                }
+            }
+            );
+        db.collection('users').add({
+            email: email,
+            username: user,
+            createdAt: Date.now()
+        })
+
     }
+
 
 
     render() {
-    if(!this.state.loggedIn){
-        return (
-            <View style={styles.container}>
-                <Text style={styles.register}>Crea tu usuario:</Text>
-                <Text style={styles.campoObli}>* Campo obligatorio</Text>
+        if (!this.state.loggedIn) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.register}>Crea tu usuario:</Text>
+                    <Text style={styles.campoObli}>* Campo obligatorio</Text>
 
-                <View>
-                    <Text style={styles.obligatorio}>*</Text>
-                    <TextInput style={styles.field}
-                        keyboardType='email-address'
-                        placeholder='email'
-                        onChangeText={text => this.setState({ email: text })}
-                        value={this.state.email}
-                    />
+                    <View>
+                        <Text style={styles.obligatorio}>*</Text>
+                        <TextInput style={styles.field}
+                            keyboardType='email-address'
+                            placeholder='email'
+                            onChangeText={text => this.setState({ email: text })}
+                            value={this.state.email}
+                        />
+                    </View>
+
+                    <View>
+                        <Text style={styles.obligatorio}>*</Text>
+                        <TextInput style={styles.field}
+                            keyboardType='default'
+                            placeholder='username'
+                            onChangeText={text => this.setState({ username: text })}
+                            value={this.state.username}
+                        />
+                    </View>
+
+                    <View>
+                        <Text style={styles.obligatorio}>*</Text>
+                        <TextInput style={styles.field}
+                            keyboardType='default'
+                            placeholder='password'
+                            onChangeText={text => this.setState({ password: text })}
+                            value={this.state.password}
+                        />
+                    </View>
+                    <Text>{this.state.error}</Text>
+                    <TouchableOpacity onPress={() => this.register(this.state.email, this.state.password, this.state.username)}>
+                        <Text style={((this.state.password && this.state.email && this.state.username) ? styles.boton : styles.botonDisabled)
+                        }> Crear usuario </Text>
+                    </TouchableOpacity>
+                    <Text style={styles.register}>¿Ya tenes usuario?</Text>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate("Login")}>
+                        <Text style={styles.login}>Login</Text>
+                    </TouchableOpacity>
                 </View>
+            );
+        }
+        if (this.state.loggedIn) {
+            return (
+                <View style={styles.container}>
+                    <Text>Ya estas logueado</Text>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate("HomeMenu")}>
+                        <Text style={styles.login}>Ir a home</Text>
+                    </TouchableOpacity>
 
-                <View>
-                    <Text style={styles.obligatorio}>*</Text>
-                    <TextInput style={styles.field}
-                        keyboardType='default'
-                        placeholder='username'
-                        onChangeText={text => this.setState({ username: text })}
-                        value={this.state.username}
-                    />
+
+
+
                 </View>
+            )
 
-                <View>
-                    <Text style={styles.obligatorio}>*</Text>
-                    <TextInput style={styles.field}
-                        keyboardType='default'
-                        placeholder='password'
-                        onChangeText={text => this.setState({ password: text })}
-                        value={this.state.password}
-                    />
-                </View>
-                <Text>{this.state.error}</Text>
-                <TouchableOpacity onPress={() => this.register(this.state.email, this.state.password, this.state.username)}>
-                    <Text style={((this.state.password && this.state.email && this.state.username) ? styles.boton : styles.botonDisabled)
-                    }> Crear usuario </Text>
-                </TouchableOpacity>
-                <Text style={styles.register}>¿Ya tenes usuario?</Text>
-                <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Login")}>
-                    <Text style={styles.login}>Login</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-    if(this.state.loggedIn){
-        return(
-            <View style={styles.container}>
-                <Text>Ya estas logueado</Text>
-                <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("HomeMenu")}>
-                    <Text style={styles.login}>Ir a home</Text>
-                </TouchableOpacity>
-                
-
-                
-
-            </View>
-        )
-        
-    }
+        }
     }
 
 }
