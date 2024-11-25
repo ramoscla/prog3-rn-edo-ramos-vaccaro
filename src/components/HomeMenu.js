@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator()
 
 function HomeMenu() {
     return (
-        <Tab.Navigator >
+        <Tab.Navigator  >
             <Tab.Screen name="Home" component={Home} options={{ tabBarIcon: () => <AntDesign name="home" size={24} color="black" /> }} />
             <Tab.Screen name="Profile" component={Profile} options={{ tabBarIcon: () => <MaterialCommunityIcons name="face-man-profile" size={24} color="black" /> }} />
             <Tab.Screen name="New Post" component={NewPost} options={{ tabBarIcon: () => <AntDesign name="pluscircleo" size={24} color="black" /> }} />
