@@ -96,7 +96,6 @@ class Register extends Component {
                     }> Crear usuario </Text>
                 </TouchableOpacity>
                 <Text style={styles.register}>¿Ya tenes usuario?</Text>
-
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate("Login")}>
                     <Text style={styles.login}>Login</Text>

@@ -70,6 +70,11 @@ class Login extends Component {
                 <Text style={styles.boton}> Login </Text>
             </TouchableOpacity>
                 <Text style={styles.error}>{this.state.error}</Text>
+             <Text style={styles.login}>¿No tienes cuenta todavía?</Text>
+             <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Register")}>
+            <Text style={styles.registrarme}>Registrarme</Text>
+                </TouchableOpacity>
         </View>
 
         );
@@ -105,9 +110,14 @@ const styles = StyleSheet.create({
     },
     login: {
         fontSize: 20,
-        marginBottom: "5%",
-        marginTop: "5%"
+        marginBottom: "2%",
+        marginTop: "2%"
 
+    },
+    registrarme: {
+        fontSize: 20,
+        marginBottom: "5%",
+        color: "lightblue"
     }
 });
 
