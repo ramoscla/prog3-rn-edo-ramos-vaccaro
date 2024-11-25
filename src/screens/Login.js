@@ -53,27 +53,27 @@ class Login extends Component {
     render() {
         return (
             <View style={styles.container}>
-            <Text style={styles.login}>Login</Text>
-            <TextInput style={styles.field}
+            <Text style={styles.title}>Login</Text>
+            <TextInput style={styles.input}
                 keyboardType='email-address'
                 placeholder='email'
                 onChangeText={text => this.setState({ email: text })
             }
                 value={this.state.email} />
-            <TextInput style={styles.field}
+            <TextInput style={styles.input}
                 keyboardType='default'
                 placeholder='password'
                 secureTextEntry={true}
                 onChangeText={text => this.setState({ password: text })}
                 value={this.state.password} />
-            <TouchableOpacity  onPress={() => this.login()}>
-                <Text style={styles.boton}> Login </Text>
+            <TouchableOpacity style={styles.button} onPress={() => this.login()}>
+                <Text style={styles.buttonText}> Login </Text>
             </TouchableOpacity>
-                <Text style={styles.error}>{this.state.error}</Text>
+                <Text style={styles.errorText}>{this.state.error}</Text>
              <Text style={styles.login}>¿No tienes cuenta todavía?</Text>
-             <TouchableOpacity
+             <TouchableOpacity style={styles.button}
                 onPress={() => this.props.navigation.navigate("Register")}>
-            <Text style={styles.registrarme}>Registrarme</Text>
+            <Text style={styles.buttonText}>Registrarme</Text>
                 </TouchableOpacity>
         </View>
 
@@ -84,42 +84,58 @@ class Login extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
+        padding: 20,
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
     },
-    boton: {
-        backgroundColor: "lightblue",
-        paddingBottom: "2vh",
-        paddingTop: "2vh",
-        width: "50vw",
-        textAlign: "center",
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#333',
+    },
+    form: {
+        backgroundColor: '#fff',
+        padding: 25,
         borderRadius: 10,
-        marginBottom: "5%"
-
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
     },
-    error:{
-        color:"red"
+    input: {
+      
+        borderWidth: 1,
+        borderColor: '#ccc',
+        paddingHorizontal: 20,
+        paddingVertical: 14,
+        borderRadius: 8,
+        marginBottom: 20,
+        fontSize: 16,
+        backgroundColor: '#f9f9f9',
+        alignItems: 'center'
+        
     },
-    field: {
-        width: "50vw",
-        marginBottom: "5%",
-        padding: "1vh",
-        borderRadius: 10,
-        borderColor: "black",
-        borderWidth: 1
+    button: {
+       
+        backgroundColor: '#FF5A5F',
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginBottom: 10,
     },
-    login: {
-        fontSize: 20,
-        marginBottom: "2%",
-        marginTop: "2%"
-
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
-    registrarme: {
-        fontSize: 20,
-        marginBottom: "5%",
-        color: "lightblue"
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        textAlign: 'center',
     }
-});
+    });
 
 
 export default Login

@@ -64,8 +64,19 @@ class Profile extends Component {
 
 
     }
-    
 
+    deletePost = (id) => {
+        db.collection("posts")
+        .doc(id)
+        .delete()
+        .then(() => {
+            console.log("Post eliminado");
+        }) 
+        .catch((error) => {
+            console.log(error);
+        });
+    };
+    
     logout() {
         this.props.navigation.navigate("Login")
         auth.signOut()
@@ -98,13 +109,17 @@ class Profile extends Component {
                         data={this.state.posts}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <Post postInfo={item} />
+                            <Post postInfo={item}  />
+                            
+                            
+                            
                         )}
                         style={{ flex: 1 }} 
                     />
                 </View>
                 
                 )}
+
 
                 <TouchableOpacity
                     onPress={() => this.logout()}>
