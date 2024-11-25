@@ -31,7 +31,7 @@ class Register extends Component {
     }
 
     register(email, pass, user) {
-        if (user != "") {
+        if (user !== "") {
             db.collection('users').add({
                 email: email,
                 username: user,

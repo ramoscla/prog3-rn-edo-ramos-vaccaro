@@ -9,10 +9,8 @@ class Profile extends Component {
         super(props);
         this.state = {
             posts: [],
-            totalPosts:0,
             userData: [], 
-            loading: true
-
+            loading: true,
 
         };
     }
@@ -32,7 +30,7 @@ class Profile extends Component {
                             data:doc.data()
                         })
                     this.setState({
-                        userData:userInfo[0].data,
+                        userData: userInfo[0].data,
                         loading: false
 
                     })
@@ -40,7 +38,29 @@ class Profile extends Component {
                 }
 
             )
+
+            db.collection('posts').orderBy("createdAt", "desc")
+            .where("owner", "==",currentUser.email)
+            .onSnapshot(
+                
+                docs => {
+                    let arrDocs =[]; 
+                   docs.forEach(doc => {
+                        arrDocs.push({
+                            id:doc.id,
+                            data:doc.data()
+                        })
+                    this.setState({
+                        posts: arrDocs.data,
+                        loading: false
+
+                    })
+                    })
+                })
+
         }
+
+        console.log(this.state.posts);
 
     }
 
@@ -54,9 +74,9 @@ class Profile extends Component {
         return (
             <View>
                 <Text> Profile </Text>
-                <Text>Hola:</Text>
-                <Text> Email: </Text>
-                <Text>Cantidad de posts: </Text>
+                <Text>Hola</Text>
+                <Text> Email: {this.state.userData.email} </Text>
+                <Text>Cantidad de posts: {this.state.posts.length}</Text>
                 <Text>Tus Posts:</Text>
 
                 <TouchableOpacity
