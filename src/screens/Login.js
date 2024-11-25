@@ -18,10 +18,10 @@ class Login extends Component {
 
     componentDidMount() {
         auth.onAuthStateChanged(user => {
-            if (user == null) {
-                this.setState({ loggedIn: false })
+            if (user){
+             this.props.navigation.navigate("HomeMenu")
             }
-        })
+         })
     }
 
 
