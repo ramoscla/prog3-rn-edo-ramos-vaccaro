@@ -57,10 +57,15 @@ class Profile extends Component {
                     })
                     })
                 })
+            // if (this.state.posts.length == 0){
+            //     console.log("No hay posts")
 
         }
+        console.log(this.state.posts.length)
+
 
     }
+    
 
     logout() {
         this.props.navigation.navigate("Login")
@@ -70,11 +75,12 @@ class Profile extends Component {
 
     render() {
         return (
+            
             <View>
                 <Text> Profile </Text>
                 <Text>Hola</Text>
                 <Text> Email: {this.state.userData.email} </Text>
-                {/* <Text>Cantidad de posts: {this.state.posts.length}</Text> */}
+                <Text>Cantidad de posts: {postnum}</Text> 
                 <Text>Tus Posts:</Text>
 
                 <TouchableOpacity

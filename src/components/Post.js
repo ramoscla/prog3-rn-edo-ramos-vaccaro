@@ -3,18 +3,19 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { auth, db } from '../firebase/config';
 import firebase from "firebase";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 class Post extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             liked: false,
             amountLikes: this.props.postInfo.data.likes.length
-            
+
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
 
         if (auth.currentUser && this.props.postInfo.data.likes.includes(auth.currentUser.email)) {
             this.setState({
@@ -24,59 +25,61 @@ class Post extends Component {
         }
     }
 
-    like(){
+    like() {
         db.collection("posts")
-        .doc(this.props.postInfo.id)
-        .update({
-            likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
-        })
-        .then(()=> {
-            this.setState({
-                liked: true,
-                amountLikes: this.props.postInfo.data.likes.length
+            .doc(this.props.postInfo.id)
+            .update({
+                likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
             })
-        })
+            .then(() => {
+                this.setState({
+                    liked: true,
+                    amountLikes: this.props.postInfo.data.likes.length
+                })
+            })
     }
 
-    dislike(){
+    dislike() {
         db.collection("posts")
-        .doc(this.props.postInfo.id)
-        .update({
-            likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
-        })
-        .then(()=> {
-            this.setState({
-                liked: false,
-                amountLikes: this.props.postInfo.data.likes.length
+            .doc(this.props.postInfo.id)
+            .update({
+                likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
             })
-        })
+            .then(() => {
+                this.setState({
+                    liked: false,
+                    amountLikes: this.props.postInfo.data.likes.length
+                })
+            })
 
     }
-    
-    render(){
-        return(
+
+    render() {
+        return (
             <View style={styles.container}>
-            <Text style={styles.ownerText}>Posteado por: {this.props.postInfo.data.owner}</Text>
-            <Text style={styles.descriptionText}>{this.props.postInfo.data.description}</Text>
-            <Text style={styles.dateText}>{ new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
+                <Text style={styles.ownerText}>Posteado por: {this.props.postInfo.data.owner}</Text>
+                <Text style={styles.descriptionText}>{this.props.postInfo.data.description}</Text>
+                <Text style={styles.dateText}>{new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
 
-            <View style={styles.likeContainer}>
-                {
-                    this.state.liked ? (
-                        <TouchableOpacity style={styles.likeButton} onPress={() => this.dislike()}>
-                            <Text style={styles.likeText}>Ya no me gusta</Text>
-                        </TouchableOpacity> 
-                    ) : (
-                        <TouchableOpacity style={styles.likeButton} onPress={() => this.like()}>
-                            <Text style={styles.likeText}>Me gusta</Text>
-                        </TouchableOpacity>
-                    )
-                }
+                <View style={styles.likeContainer}>
+                    {
+                        this.state.liked ? (
+                            <TouchableOpacity style={styles.likeButton} onPress={() => this.dislike()}>
+                                <AntDesign name="heart" size={24} color="red" />
+                            </TouchableOpacity>
+
+
+                        ) : (
+                            <TouchableOpacity style={styles.likeButton} onPress={() => this.like()}>
+                                <AntDesign name="hearto" size={24} color="black" />
+                            </TouchableOpacity>
+                        )
+                    }
+                </View>
+                <Text style={styles.likesCount}>Cantidad de likes: {this.state.amountLikes}</Text>
             </View>
-            <Text style={styles.likesCount}>Cantidad de likes: {this.state.amountLikes}</Text>
-        </View>
-    );
-}
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -114,15 +117,9 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     likeButton: {
-        backgroundColor: '#FF5A5F',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        borderRadius: 30,
         marginRight: 12,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 2,
     },
     likeText: {
         color: '#fff',
