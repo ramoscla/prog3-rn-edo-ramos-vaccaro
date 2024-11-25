@@ -13,68 +13,80 @@ class Register extends Component {
             password: '',
             username: '',
             registered: false,
-            error: ' '
+            errorMessage: ' ',
+            error: false
         };
     }
 
     componentDidMount() {
+       
         auth.onAuthStateChanged(user => {
-            if (user == null) {
-                this.setState({ loggedIn: false })
-                console.log("no logueado")
-            }
-            else {
-                this.setState({ loggedIn: true })
-                console.log("logueado")
-            }
+           if (user){
+            this.props.navigation.navigate("HomeMenu")
+           }
         })
     }
 
     register(email, pass, user) {
+        if (user == "") {
+            this.setState({ errorMessage: 'El campo username es obligatorio' });
+            console.log(this.state.errorMessage)
+            this.setState({ error: true })
 
+        }
+        
+        if (pass.length < 6) {
+            this.setState({ errorMessage: 'La contraseña debe tener al menos 6 caracteres' });
+            console.log(this.state.errorMessage)
+            this.setState({ error: true })
+        }
+
+        if (email.includes("@") == false) {
+            this.setState({ errorMessage: 'El campo email es obligatorio' });
+            console.log(this.state.errorMessage)
+            this.setState({ error: true }) 
+        }
+
+    
+        if (!this.state.error) {
         auth.createUserWithEmailAndPassword(email, pass)
 
             .then(response => {
                 this.setState({ registered: true });
                 this.setState({ loggedIn: true });
+                db.collection('users').add({
+                    email: email,
+                    username: user,
+                    createdAt: Date.now()
+                })
                 this.props.navigation.navigate("HomeMenu");
+
             })
             .catch(error => {
-                if (user == "") {
-                    this.setState({ error: 'El campo username es obligatorio' });
-                    console.log(this.state.error)
-
-                }
-                else if (error.code === 'auth/email-already-in-use') {
-                    this.setState({ error: 'El email ya esta en uso' });
-                    console.log(this.state.error)
-                }
-                else if (error.code === 'auth/weak-password') {
-                    this.setState({ error: 'La contraseña debe tener al menos 6 caracteres' });
-                    console.log(this.state.error)
+                console.log(error)
+                if (error.code === 'auth/email-already-in-use') {
+                    this.setState({ errorMessage: 'El email ya esta en uso' });
+                    console.log(this.state.errorMessage)
                 }
                 else if (error.code === 'auth/invalid-email') {
-                    this.setState({ error: 'email mal formateado' });
-                    console.log(this.state.error)
+                    this.setState({ errorMessage: 'email mal formateado' });
+                    console.log(this.state.errorMessage)
                 }
-                else {
-                    this.setState({ error: error.message });
-                    console.log(error)
+                else
+                {
+                    this.setState({ errorMessage: error.message });
+                    console.log(errorMessage)
                 }
             }
             );
-        db.collection('users').add({
-            email: email,
-            username: user,
-            createdAt: Date.now()
-        })
+        
+        }
 
     }
 
 
 
     render() {
-        if (!this.state.loggedIn) {
             return (
                 <View style={styles.container}>
                     <Text style={styles.register}>Crea tu usuario:</Text>
@@ -110,7 +122,7 @@ class Register extends Component {
                             value={this.state.password}
                         />
                     </View>
-                    <Text>{this.state.error}</Text>
+                    <Text>{this.state.errorMessage}</Text>
                     <TouchableOpacity onPress={() => this.register(this.state.email, this.state.password, this.state.username)}>
                         <Text style={((this.state.password && this.state.email && this.state.username) ? styles.boton : styles.botonDisabled)
                         }> Crear usuario </Text>
@@ -123,13 +135,7 @@ class Register extends Component {
                 </View>
             );
         }
-        if (this.state.loggedIn) {
-            return (
-                this.props.navigation.navigate("HomeMenu")
-            )
 
-        }
-    }
 
 }
 
