@@ -30,6 +30,7 @@ class NewPost extends Component {
         })
         .then(() => {
             this.setState({ descPost: "", error: "" });
+            this.props.navigation.navigate("Home");
         })
         .catch((error) => {
             this.setState({ error: "Hubo un problema al crear el post. Intente denuevo." });
