@@ -32,13 +32,12 @@ class Register extends Component {
 
     register(email, pass, user) {
         if (user !== "") {
+            auth.createUserWithEmailAndPassword(email, pass)
             db.collection('users').add({
                 email: email,
                 username: user,
                 createdAt: Date.now()
             })
-            auth.createUserWithEmailAndPassword(email, pass)
-
                 .then(response => {
                     this.setState({ registered: true });
                     this.setState({ loggedIn: true });
