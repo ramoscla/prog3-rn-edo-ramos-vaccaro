@@ -51,12 +51,13 @@ class Profile extends Component {
                             data:doc.data()
                         })
                     this.setState({
-                        posts: arrDocs.data,
+                        posts: arrDocs,
                         loading: false
 
                     })
                     })
                 })
+                console.log(this.state.posts)
 
         }
 
@@ -72,9 +73,9 @@ class Profile extends Component {
         return (
             <View>
                 <Text> Profile </Text>
-                <Text>Hola</Text>
+                <Text>Hola </Text>
                 <Text> Email: {this.state.userData.email} </Text>
-                {/* <Text>Cantidad de posts: {this.state.posts.length}</Text> */}
+                 <Text>Cantidad de posts: {this.state.posts.length}</Text> 
                 <Text>Tus Posts:</Text>
 
                 <TouchableOpacity
