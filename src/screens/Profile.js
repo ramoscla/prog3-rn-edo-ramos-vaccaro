@@ -9,12 +9,39 @@ class Profile extends Component {
         super(props);
         this.state = {
             posts: [],
+            totalPosts:0,
             userData: [], 
             loading: true
+
 
         };
     }
     componentDidMount(){
+        let currentUser = auth.currentUser
+
+        if (currentUser){
+            db.collection('users')
+            .where("email", "==",currentUser.email)
+            .onSnapshot(
+                
+                docs => {
+                    let userInfo =[]; 
+                    docs.forEach(doc => {
+                        userInfo.push({
+                            id:doc.id,
+                            data:doc.data()
+                        })
+                    this.setState({
+                        userData:userInfo[0].data,
+                        loading: false
+
+                    })
+                    })
+                }
+
+            )
+        }
+
     }
 
     logout() {
@@ -27,9 +54,14 @@ class Profile extends Component {
         return (
             <View>
                 <Text> Profile </Text>
+                <Text>Hola:</Text>
+                <Text> Email: </Text>
+                <Text>Cantidad de posts: </Text>
+                <Text>Tus Posts:</Text>
+
                 <TouchableOpacity
                     onPress={() => this.logout()}>
-                    <Text style={styles.boton}>Desloguear</Text>
+                    <Text style={styles.boton}>Cerrar sesión </Text>
                 </TouchableOpacity>
 
             </View>

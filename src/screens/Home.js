@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacit, StyleSheet} from 'react-native';
+import { View, Text, TextInput, TouchableOpacit, StyleSheet, ActivityIndicator} from 'react-native';
 import { auth, db } from '../firebase/config';
 import { FlatList } from 'react-native-web';
 import Post from "../components/Post"
@@ -39,7 +39,7 @@ class Home extends Component {
             return(
                 <View style={styles.container}>
                 {this.state.loading ? (
-                    <Text>Cargando posts...</Text>
+                    <ActivityIndicator size='large' color='red' />
                 ) : this.state.posts.length === 0 ? (
                     <Text>No hay posts aún</Text>
                 ) : (
