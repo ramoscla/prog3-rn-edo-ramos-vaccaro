@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, FlatList, TextInput } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, FlatList, TextInput,ActivityIndicator } from "react-native";
 import { auth, db } from '../firebase/config';
 
 
@@ -73,13 +73,18 @@ class Profile extends Component {
     }
 
     render() {
-        return (
+        
+        return this.state.loading ? (
+            
+            <ActivityIndicator size='large' color='red' />
+        ):
+        (
             
             <View>
                 <Text> Profile </Text>
                 <Text>Hola </Text>
                 <Text> Email: {this.state.userData.email} </Text>
-                {/* <Text>Cantidad de posts: {this.state.posts.length}</Text> */}
+                <Text>Cantidad de posts: {this.state.posts.length}</Text> 
                 <Text>Tus Posts:</Text>
 
                 <TouchableOpacity
@@ -88,7 +93,8 @@ class Profile extends Component {
                 </TouchableOpacity>
 
             </View>
-        );
+        )
+
     }
 }
 const styles = StyleSheet.create({
