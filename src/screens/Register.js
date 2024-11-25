@@ -105,6 +105,7 @@ class Register extends Component {
                         <TextInput style={styles.field}
                             keyboardType='default'
                             placeholder='password'
+                            secureTextEntry={true}
                             onChangeText={text => this.setState({ password: text })}
                             value={this.state.password}
                         />
@@ -124,17 +125,7 @@ class Register extends Component {
         }
         if (this.state.loggedIn) {
             return (
-                <View style={styles.container}>
-                    <Text>Ya estas logueado</Text>
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate("HomeMenu")}>
-                        <Text style={styles.login}>Ir a home</Text>
-                    </TouchableOpacity>
-
-
-
-
-                </View>
+                this.props.navigation.navigate("HomeMenu")
             )
 
         }
