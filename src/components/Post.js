@@ -10,6 +10,7 @@ class Post extends Component {
         super(props);
         this.state = {
             liked: false,
+            owner: false,
             amountLikes: this.props.postInfo.data.likes.length
 
         };
@@ -21,6 +22,11 @@ class Post extends Component {
             this.setState({
                 liked: true,
                 amountLikes: this.props.postInfo.data.likes.length,
+            });
+        }
+        if (auth.currentUser && this.props.postInfo.data.owner.includes(auth.currentUser.email)) {
+            this.setState({
+                owner: true,
             });
         }
     }
@@ -53,6 +59,17 @@ class Post extends Component {
             })
 
     }
+    deletePost = (id) => {
+        db.collection("posts")
+        .doc(id)
+        .delete()
+        .then(() => {
+            console.log("Post eliminado");
+        }) 
+        .catch((error) => {
+            console.log(error);
+        });
+    };
 
     render() {
         return (
@@ -77,6 +94,11 @@ class Post extends Component {
                     }
                 </View>
                 <Text style={styles.likesCount}>Cantidad de likes: {this.state.amountLikes}</Text>
+
+                    <TouchableOpacity  style={this.state.owner ? styles.deleteOn : styles.deleteOff} onPress={() => this.deletePost(this.props.postInfo.id)}>
+                        <Text>Eliminar post</Text>
+                    </TouchableOpacity>
+            
             </View>
         );
     }
@@ -130,6 +152,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
         fontWeight: 'bold',
+    },
+    deleteOn: {
+        backgroundColor: "red",
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    deleteOff: {
+        display: "none"
     }
 });
 

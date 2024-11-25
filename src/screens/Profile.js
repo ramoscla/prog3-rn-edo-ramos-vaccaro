@@ -65,17 +65,7 @@ class Profile extends Component {
 
     }
 
-    deletePost = (id) => {
-        db.collection("posts")
-        .doc(id)
-        .delete()
-        .then(() => {
-            console.log("Post eliminado");
-        }) 
-        .catch((error) => {
-            console.log(error);
-        });
-    };
+ 
     
     logout() {
         this.props.navigation.navigate("Login")
