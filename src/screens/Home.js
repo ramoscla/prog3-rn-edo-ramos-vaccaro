@@ -25,11 +25,11 @@ class Home extends Component {
                         id: doc.id,
                         data: doc.data()
                     })
-                    this.setState({
-                        posts: arrDocs, 
-                        loading: false
-                    }), () => console.log("posts en el home",JSON.stringify(this.state.posts), null, 4 );
                 })
+                this.setState({
+                    posts: arrDocs, 
+                    loading: false
+                });
             }
         )
     }

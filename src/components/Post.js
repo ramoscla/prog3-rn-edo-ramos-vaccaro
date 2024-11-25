@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import { auth, db } from '../firebase/config';
 import firebase from "firebase";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { FlatList } from 'react-native-web';
 
 class Post extends Component {
     constructor(props) {
@@ -59,21 +60,12 @@ class Post extends Component {
             })
 
     }
-    deletePost = (id) => {
-        db.collection("posts")
-        .doc(id)
-        .delete()
-        .then(() => {
-            console.log("Post eliminado");
-        }) 
-        .catch((error) => {
-            console.log(error);
-        });
-    };
+
 
     render() {
         return (
-            <View style={styles.container}>
+
+             <View style={styles.container}>
                 <Text style={styles.ownerText}>Posteado por: {this.props.postInfo.data.owner}</Text>
                 <Text style={styles.descriptionText}>{this.props.postInfo.data.description}</Text>
                 <Text style={styles.dateText}>{new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
@@ -95,11 +87,9 @@ class Post extends Component {
                 </View>
                 <Text style={styles.likesCount}>Cantidad de likes: {this.state.amountLikes}</Text>
 
-                    <TouchableOpacity  style={this.state.owner ? styles.deleteOn : styles.deleteOff} onPress={() => this.deletePost(this.props.postInfo.id)}>
-                        <Text>Eliminar post</Text>
-                    </TouchableOpacity>
-            
+                
             </View>
+    
         );
     }
 }
@@ -152,16 +142,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
         fontWeight: 'bold',
-    },
-    deleteOn: {
-        backgroundColor: "red",
-        padding: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    deleteOff: {
-        display: "none"
     }
 });
 
