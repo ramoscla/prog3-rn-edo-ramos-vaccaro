@@ -32,6 +32,7 @@ class Profile extends Component {
                         })
                     this.setState({
                         userData: userInfo[0].data,
+                        loading: false,
 
                     })
                     })
@@ -57,10 +58,9 @@ class Profile extends Component {
                     })
                     })
                 })
-                console.log(this.state.posts)
 
         }
-        console.log(this.state.posts.length)
+
 
 
     }
@@ -74,23 +74,26 @@ class Profile extends Component {
 
     render() {
         console.log(this.state.userData)
-        return this.state.loading ? (
+        return (
+            <View>
+                  {this.state.loading ? (
             
             <ActivityIndicator size='large' color='red' />
         ):
         (
-            
             <View>
                 <Text> Profile </Text>
                 <Text>Hola {this.state.userData.username}</Text>
                 <Text> Email: {this.state.userData.email} </Text>
                 <Text>Cantidad de posts: {this.state.posts.length}</Text>
+                
                 {this.state.posts.length === 0 ? (
                     <Text>No tienes posts!</Text>
 
                 ):(
                 <View>
                     <Text>Tus Posts:</Text>
+
                     <FlatList
                         data={this.state.posts}
                         keyExtractor={(item) => item.id.toString()}
@@ -103,16 +106,18 @@ class Profile extends Component {
                 
                 )}
 
-                
-
-
                 <TouchableOpacity
                     onPress={() => this.logout()}>
                     <Text style={styles.boton}>Cerrar sesión </Text>
                 </TouchableOpacity>
 
             </View>
+    )}
+
+            </View>
         )
+        
+      
 
     }
 }
