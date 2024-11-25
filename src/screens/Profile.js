@@ -19,7 +19,7 @@ class Profile extends Component {
 
         if (currentUser){
             db.collection('users')
-            .where("email", "==",currentUser.email)
+            .where("email", "==", currentUser.email)
             .onSnapshot(
                 
                 docs => {
@@ -59,8 +59,6 @@ class Profile extends Component {
                 })
 
         }
-
-        console.log(this.state.posts);
 
     }
 
