@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text, FlatList, TextInput,ActivityIndicator } from "react-native";
 import { auth, db } from '../firebase/config';
+import Post from "../components/Post"
 
 
 
@@ -31,7 +32,6 @@ class Profile extends Component {
                         })
                     this.setState({
                         userData: userInfo[0].data,
-                        loading: false
 
                     })
                     })
@@ -73,7 +73,7 @@ class Profile extends Component {
     }
 
     render() {
-        
+        console.log(this.state.userData)
         return this.state.loading ? (
             
             <ActivityIndicator size='large' color='red' />
@@ -82,10 +82,29 @@ class Profile extends Component {
             
             <View>
                 <Text> Profile </Text>
-                <Text>Hola </Text>
+                <Text>Hola {this.state.userData.username}</Text>
                 <Text> Email: {this.state.userData.email} </Text>
-                <Text>Cantidad de posts: {this.state.posts.length}</Text> 
-                <Text>Tus Posts:</Text>
+                <Text>Cantidad de posts: {this.state.posts.length}</Text>
+                {this.state.posts.length === 0 ? (
+                    <Text>No tienes posts!</Text>
+
+                ):(
+                <View>
+                    <Text>Tus Posts:</Text>
+                    <FlatList
+                        data={this.state.posts}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <Post postInfo={item} />
+                        )}
+                        style={{ flex: 1 }} 
+                    />
+                </View>
+                
+                )}
+
+                
+
 
                 <TouchableOpacity
                     onPress={() => this.logout()}>
