@@ -51,14 +51,13 @@ class Profile extends Component {
                             data:doc.data()
                         })
                     this.setState({
-                        posts: arrDocs.data,
+                        posts: arrDocs,
                         loading: false
 
                     })
                     })
                 })
-            // if (this.state.posts.length == 0){
-            //     console.log("No hay posts")
+                console.log(this.state.posts)
 
         }
         console.log(this.state.posts.length)
@@ -78,9 +77,9 @@ class Profile extends Component {
             
             <View>
                 <Text> Profile </Text>
-                <Text>Hola</Text>
+                <Text>Hola </Text>
                 <Text> Email: {this.state.userData.email} </Text>
-                <Text>Cantidad de posts: {postnum}</Text> 
+                {/* <Text>Cantidad de posts: {this.state.posts.length}</Text> */}
                 <Text>Tus Posts:</Text>
 
                 <TouchableOpacity
