@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text, FlatList, TextInput, ActivityIndicator } from "react-native";
 import { auth, db } from '../firebase/config';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import Post from "../components/Post";
 
 
@@ -86,28 +87,28 @@ class Profile extends Component {
                     <ActivityIndicator size='large' color='red' />
                 ) : (
                     <View>
-                        <Text> Profile </Text>
-                        <Text>Hola {this.state.userData.username}</Text>
-                        <Text>Email: {this.state.userData.email}</Text>
-                        <Text>Cantidad de posts: {this.state.posts.length}</Text>
+                       
+                        <Text style={styles.noCardTextTitle}>Hola {this.state.userData.username}</Text>
+                        <Text style={styles.noCardText}>Email: {this.state.userData.email}</Text>
+                        <Text style= {styles.noCardText}>Cantidad de posts: {this.state.posts.length}</Text>
 
 
                         {this.state.posts.length === 0 ? (
                             <Text>No tienes posts!</Text>
                         ) : (
                             <View>
-                                <Text>Tus Posts:</Text>
+                                <Text style ={styles.noCardTextTitle}>Tus Posts:</Text>
                                 <FlatList
                                     data={this.state.posts}
                                     keyExtractor={(item) => item.id.toString()}
                                     renderItem={({ item }) => (
-                                        <View style={styles.container}>
+                                        <View style={styles.card}>
                                             <Text style={styles.ownerText}>Posteado por: {item.data.owner}</Text>
                                             <Text style={styles.descriptionText}>{item.data.description}</Text>
                                             <Text style={styles.dateText}>{new Date(item.data.createdAt).toLocaleString()}</Text>
                                             <Text style={styles.likesCount}>Cantidad de likes: {item.data.likes.length}</Text>
                                             <TouchableOpacity style={this.state.owner ? styles.deleteOn : styles.deleteOff} onPress={() => this.deletePost(item.id)}>
-                                                <Text>Eliminar post</Text>
+                                                <AntDesign name="delete" size={22} color="dark-grey" />
                                             </TouchableOpacity>
                                         </View>
                                     )}
@@ -117,8 +118,8 @@ class Profile extends Component {
                         )}
 
 
-                        <TouchableOpacity onPress={() => this.logout()}>
-                            <Text style={styles.boton}>Cerrar sesión</Text>
+                        <TouchableOpacity style={styles.logoutButton} onPress={() => this.logout()}>
+                            <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -129,49 +130,90 @@ class Profile extends Component {
 
 
 const styles = StyleSheet.create({
-    container: {
+    profileContainer: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
+        padding: 20,
+        backgroundColor: '#f5f8fa',
     },
-    boton: {
-        backgroundColor: "lightblue",
-        paddingBottom: "2vh",
-        paddingTop: "2vh",
-        width: "50vw",
-        textAlign: "center",
+    profileTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    profileText: {
+        fontSize: 18,
+        marginBottom: 5,
+    },
+    noPostsText: {
+        fontSize: 18,
+        color: 'gray',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    card: {
+        backgroundColor: 'white',
         borderRadius: 10,
-        marginBottom: "5%"
+        padding: 15,
+        marginVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
     },
     ownerText: {
         fontWeight: 'bold',
         fontSize: 16,
+        marginBottom: 5,
     },
     descriptionText: {
         fontSize: 14,
-        marginVertical: 5,
+        marginBottom: 5,
     },
     dateText: {
         fontSize: 12,
         color: 'gray',
+        marginBottom: 5,
     },
     likesCount: {
         fontSize: 14,
-        marginVertical: 5,
+        marginBottom: 10,
     },
-    deleteOn: {
+    deleteButton: {
         backgroundColor: 'red',
         padding: 10,
         borderRadius: 5,
-        marginTop: 10,
+        alignItems: 'center',
     },
-    deleteOff: {
-        backgroundColor: 'gray',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
+    deleteButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    logoutButton: {
+        backgroundColor: 'lightblue',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    logoutButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    noCardTextTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 5,
+        marginHorizontal: 5,
+    },
+    noCardText:{
+        fontSize: 14,
+        marginBottom: 10,
+        marginHorizontal:5,
+
     }
 });
+
 
 
 export default Profile;

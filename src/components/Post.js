@@ -70,7 +70,7 @@ class Post extends Component {
                 <Text style={styles.descriptionText}>{this.props.postInfo.data.description}</Text>
                 <Text style={styles.dateText}>{new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
 
-                <View style={styles.likeContainer}>
+                <View style={styles.actionsContainer}>
                     {
                         this.state.liked ? (
                             <TouchableOpacity style={styles.likeButton} onPress={() => this.dislike()}>
@@ -94,55 +94,54 @@ class Post extends Component {
     }
 }
 
+
 const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-        marginBottom: 20,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3,
-        marginTop: 10,
-    },
-    ownerText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 8,
-    },
-    descriptionText: {
-        fontSize: 18,
-        color: '#333',
-        marginBottom: 12,
-        lineHeight: 24,
-    },
-    dateText: {
-        fontSize: 14,
-        color: '#888',
-        marginBottom: 16,
-    },
-    likeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    likeButton: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        marginRight: 12,
-    },
-    likeText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    likesCount: {
-        fontSize: 16,
-        color: '#333',
-        fontWeight: 'bold',
-    }
-});
+     container: {
+            padding: 15,
+            marginBottom: 15,
+            backgroundColor: '#fff',
+            borderRadius: 10,
+            shadowColor: '#000',
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+            elevation: 3,
+            marginHorizontal: 10,
+        },
+        ownerText: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#333',
+        },
+        dateText: {
+            fontSize: 12,
+            color: '#888',
+            marginBottom: 10,
+        },
+        descriptionText: {
+            fontSize: 14,
+            color: '#333',
+            marginBottom: 10,
+        },
+        actionsContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        likesCount: {
+            fontSize: 14,
+            color: '#333',
+            marginLeft: 10,
+        },
+        deleteButton: {
+            backgroundColor: 'red',
+            padding: 5,
+            borderRadius: 5,
+            marginLeft: 'auto',
+        },
+        deleteButtonText: {
+            color: 'white',
+            fontSize: 12,
+        },
+    });
+    
 
 export default Post;
