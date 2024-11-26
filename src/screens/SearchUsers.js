@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { auth, db } from "../firebase/config";
 import { FlatList } from "react-native-web";
 
@@ -46,26 +53,31 @@ class SearchUsers extends Component {
 
   render() {
     return (
-      <View style ={styles.container}>
+      <View style={styles.container}>
+
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar usuarios..."
+          placeholder="🔍 Buscar usuarios..."
+          placeholderTextColor="#888"
           value={this.state.searchUser}
           onChangeText={(item) => this.handleSearch(item)}
         />
 
+
         {this.state.loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator size="large" color="#1DA1F2" />
         ) : this.state.users.length === 0 &&
           this.state.searchUser.trim() !== "" ? (
-          <Text style={styles.noUsersText}>El usuario que buscas no existe</Text>
+          <Text style={styles.noUsersText}>
+            El usuario que buscas no existe{" "}
+          </Text>
         ) : (
           <FlatList
             data={this.state.users}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View>
-                <Text style={styles.usernameText} >{item.data.username}</Text>
+              <View style={styles.card}>
+                <Text style={styles.usernameText}>{item.data.username}</Text>
                 <Text style={styles.emailText}>{item.data.email}</Text>
               </View>
             )}
@@ -80,43 +92,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f8fa',
+    backgroundColor: "#F5F8FA",
   },
   searchInput: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: "#E1E8ED",
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: "#FFFFFF",
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   noUsersText: {
     fontSize: 18,
-    color: 'gray',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginTop: 20,
+    fontStyle: "italic",
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
   usernameText: {
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#FF5A5F",
     marginBottom: 5,
   },
   emailText: {
     fontSize: 14,
-    color: 'gray',
+    color: "#555",
   },
 });
-
 
 export default SearchUsers;

@@ -1,6 +1,12 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
 import React, { Component } from "react";
-import { TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { auth, db } from "../firebase/config";
 
 class Register extends Component {
@@ -10,9 +16,8 @@ class Register extends Component {
       email: "",
       password: "",
       username: "",
-      registered: false,
-      errorMessage: " ",
-      error: false,
+      loading: false,
+      errorMessage: "",
     };
   }
 
@@ -24,123 +29,104 @@ class Register extends Component {
     });
   }
 
-  register(email, pass, user) {
-    if (user == "") {
-      this.setState({ errorMessage: "El campo username es obligatorio" });
-      console.log(this.state.errorMessage);
-      this.setState({ error: true });
-    }
+  register() {
+    const { email, password, username } = this.state;
 
-    if (pass.length < 6) {
+    if (!email || !password || !username) {
+      this.setState({ errorMessage: "Todos los campos son obligatorios." });
+      return;
+    }
+    if (!email.includes("@")) {
+      this.setState({ errorMessage: "El email debe ser válido." });
+      return;
+    }
+    if (password.length < 6) {
       this.setState({
-        errorMessage: "La contraseña debe tener al menos 6 caracteres",
+        errorMessage: "La contraseña debe tener al menos 6 caracteres.",
       });
-      console.log(this.state.errorMessage);
-      this.setState({ error: true });
+      return;
     }
 
-    if (email.includes("@") == false) {
-      this.setState({ errorMessage: "El campo email es obligatorio" });
-      console.log(this.state.errorMessage);
-      this.setState({ error: true });
-    }
-
-    if (!this.state.error) {
-      auth
-        .createUserWithEmailAndPassword(email, pass)
-
-        .then((response) => {
-          this.setState({ registered: true });
-          this.setState({ loggedIn: true });
-          db.collection("users").add({
-            email: email,
-            username: user,
-            createdAt: Date.now(),
-          });
-          this.props.navigation.navigate("HomeMenu");
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.code === "auth/email-already-in-use") {
-            this.setState({ errorMessage: "El email ya esta en uso" });
-            console.log(this.state.errorMessage);
-          } else if (error.code === "auth/invalid-email") {
-            this.setState({ errorMessage: "email mal formateado" });
-            console.log(this.state.errorMessage);
-          } else {
-            this.setState({ errorMessage: error.message });
-            console.log(errorMessage);
-          }
+    this.setState({ loading: true, errorMessage: "" });
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        db.collection("users").add({
+          email,
+          username,
+          createdAt: Date.now(),
         });
-    }
+        this.props.navigation.navigate("HomeMenu");
+      })
+      .catch((error) => {
+        let message = "Ocurrió un error. Intenta de nuevo.";
+        if (error.code === "auth/email-already-in-use") {
+          message = "El email ya está en uso.";
+        } else if (error.code === "auth/invalid-email") {
+          message = "El email no es válido.";
+        }
+        this.setState({ errorMessage: message, loading: false });
+      });
   }
 
   render() {
+    const { email, password, username, loading, errorMessage } = this.state;
+
     return (
       <View style={styles.container}>
-        <Text style={styles.register}>Crea tu usuario:</Text>
-        <Text style={styles.campoObli}>* Campo obligatorio</Text>
+        <Text style={styles.title}>Crear Cuenta</Text>
 
-        <View>
-          <Text style={styles.obligatorio}>*</Text>
-          <TextInput
-            style={styles.field}
-            keyboardType="email-address"
-            placeholder="email"
-            onChangeText={(text) => this.setState({ email: text })}
-            value={this.state.email}
-          />
-        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={(text) => this.setState({ email: text })}
+        />
 
-        <View>
-          <Text style={styles.obligatorio}>*</Text>
-          <TextInput
-            style={styles.field}
-            keyboardType="default"
-            placeholder="username"
-            onChangeText={(text) => this.setState({ username: text })}
-            value={this.state.username}
-          />
-        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre de usuario"
+          value={username}
+          onChangeText={(text) => this.setState({ username: text })}
+        />
 
-        <View>
-          <Text style={styles.obligatorio}>*</Text>
-          <TextInput
-            style={styles.field}
-            keyboardType="default"
-            placeholder="password"
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({ password: text })}
-            value={this.state.password}
-          />
-        </View>
-        <Text>{this.state.errorMessage}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Contraseña"
+          secureTextEntry
+          value={password}
+          onChangeText={(text) => this.setState({ password: text })}
+        />
+
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
+
         <TouchableOpacity
-          onPress={() =>
-            this.register(
-              this.state.email,
-              this.state.password,
-              this.state.username
-            )
-          }
+          style={[
+            styles.button,
+            !email || !password || !username ? styles.buttonDisabled : null,
+          ]}
+          disabled={!email || !password || !username || loading}
+          onPress={() => this.register()}
         >
+          {loading ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.buttonText}>Registrar</Text>
+          )}
+        </TouchableOpacity>
+
+        <Text style={styles.loginText}>
+          ¿Ya tienes cuenta?{" "}
           <Text
-            style={
-              this.state.password && this.state.email && this.state.username
-                ? styles.boton
-                : styles.botonDisabled
-            }
+            style={styles.loginLink}
+            onPress={() => this.props.navigation.navigate("Login")}
           >
-            {" "}
-            Crear usuario{" "}
+            Inicia sesión
           </Text>
-        </TouchableOpacity>
-        <Text style={styles.register}>¿Ya tenes usuario?</Text>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Login")}
-        >
-          <Text style={styles.login}>Login</Text>
-        </TouchableOpacity>
+        </Text>
       </View>
     );
   }
@@ -149,48 +135,56 @@ class Register extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5F8FA",
+    padding: 20,
   },
-  boton: {
-    backgroundColor: "lightblue",
-    paddingBottom: "2vh",
-    paddingTop: "2vh",
-    width: "50vw",
-    textAlign: "center",
-    borderRadius: 10,
-    marginBottom: "3%",
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#333",
   },
-  login: {
-    fontSize: 20,
-    marginBottom: "5%",
-    color: "lightblue",
-  },
-  field: {
-    width: "50vw",
-    padding: "1vh",
-    borderRadius: 10,
-    borderColor: "black",
+  input: {
+    width: "90%",
+    padding: 15,
+    borderRadius: 8,
     borderWidth: 1,
-    marginBottom: "3%",
+    borderColor: "#CCC",
+    backgroundColor: "#FFF",
+    marginBottom: 15,
+    fontSize: 16,
   },
-  register: {
-    fontSize: 20,
-    marginBottom: "3%",
-    marginTop: "3%",
-  },
-  obligatorio: {
-    fontSize: 10,
-    marginTop: "0%",
+  errorText: {
     color: "red",
-    alignSelf: "flex-end",
+    fontSize: 14,
+    marginBottom: 10,
   },
-  campoObli: {
-    color: "red",
-    marginBottom: "3%",
+  button: {
+    backgroundColor: "#FF5A5F",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    width: "90%",
+    alignItems: "center",
   },
-  botonDisabled: {
-    display: "none",
+  buttonDisabled: {
+    backgroundColor: "#AAB8C2",
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  loginText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: "#555",
+  },
+  loginLink: {
+    color: "#FF5A5F",
+    fontWeight: "bold",
   },
 });
 

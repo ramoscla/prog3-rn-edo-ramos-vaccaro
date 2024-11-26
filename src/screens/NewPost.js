@@ -1,119 +1,138 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { StyleSheet } from 'react-native';
-import { auth, db } from '../firebase/config';
-
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { auth, db } from "../firebase/config";
 
 class NewPost extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            descPost: "",
-            error: "",
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      descPost: "",
+      error: "",
+    };
+  }
 
-    createPost(descPost){
-        if (!auth.currentUser) {
-            this.setState({ error: "Tu usuario no esta autenticado" });
-            return;
-        }
-        if (descPost === ""){
-            this.setState({ error: "Ingresa una descripción para poder crear un post" });
-            return;
-        }
-        db.collection("posts").add({
-           owner: auth.currentUser.email,
-           createdAt: Date.now(),
-           description: descPost,
-           likes: []
-        })
-        .then(() => {
-            this.setState({ descPost: "", error: "" });
-            this.props.navigation.navigate("Home");
-        })
-        .catch((error) => {
-            this.setState({ error: "Hubo un problema al crear el post. Intente denuevo." });
+  createPost(descPost) {
+    if (!auth.currentUser) {
+      this.setState({ error: "Tu usuario no está autenticado" });
+      return;
+    }
+    if (descPost === "") {
+      this.setState({
+        error: "Ingresa una descripción para poder crear un post",
+      });
+      return;
+    }
+    db.collection("posts")
+      .add({
+        owner: auth.currentUser.email,
+        createdAt: Date.now(),
+        description: descPost,
+        likes: [],
+      })
+      .then(() => {
+        this.setState({ descPost: "", error: "" });
+        this.props.navigation.navigate("Home");
+      })
+      .catch(() => {
+        this.setState({
+          error: "Hubo un problema al crear el post. Intenta de nuevo.",
         });
+      });
+  }
 
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Crear un Nuevo Post ✨</Text>
 
-    render(){
-        return(
-            <View style={styles.container}>
-            <Text style={styles.title}>Crea un nuevo Post</Text>
-            <View style={styles.form}>
-                <TextInput 
-                    style={styles.input}
-                    placeholder='Agrega una descripción para tu post'
-                    value={this.state.descPost}
-                    onChangeText={(text) => this.setState({ descPost: text })}
-                />
-                <TouchableOpacity 
-                    style={styles.button} 
-                    onPress={() => this.createPost(this.state.descPost)}
-                >
-                    <Text style={styles.buttonText}>Crear Post</Text>
-                </TouchableOpacity>
-                {this.state.error !== "" && (
-                    <Text style={styles.errorText}>{this.state.error}</Text>
-                )}
-            </View>
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="¿Qué estás pensando?"
+            placeholderTextColor="#888"
+            multiline={true}
+            value={this.state.descPost}
+            onChangeText={(text) => this.setState({ descPost: text })}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.createPost(this.state.descPost)}
+          >
+            <Text style={styles.buttonText}>Publicar</Text>
+          </TouchableOpacity>
+
+          {this.state.error !== "" && (
+            <Text style={styles.errorText}>{this.state.error}</Text>
+          )}
         </View>
+      </View>
     );
-}
+  }
 }
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
-},
-title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    backgroundColor: "#F5F8FA",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#333',
-},
-form: {
-    backgroundColor: '#fff',
+  },
+  form: {
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-},
-input: {
+  },
+  input: {
+    height: 100,
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 20,
+    borderColor: "#E1E8ED",
+    borderRadius: 10,
+    padding: 15,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
-},
-button: {
-    backgroundColor: '#FF5A5F',
+    backgroundColor: "#F8F9FA",
+    marginBottom: 20,
+    textAlignVertical: "top",
+    color: "#333",
+  },
+  button: {
+    backgroundColor: "#FF5A5F",
     paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
-},
-buttonText: {
-    color: '#fff',
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  buttonText: {
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
-},
-errorText: {
-    color: 'red',
+    fontWeight: "bold",
+  },
+  errorText: {
+    color: "red",
     fontSize: 14,
-    textAlign: 'center',
-}
+    textAlign: "center",
+    marginTop: 10,
+  },
 });
-
 
 export default NewPost;

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, FlatList, TextInput, ActivityIndicator } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, FlatList, ActivityIndicator } from "react-native";
 import { auth, db } from '../firebase/config';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Post from "../components/Post";
-
 
 class Profile extends Component {
     constructor(props) {
@@ -15,10 +13,8 @@ class Profile extends Component {
         };
     }
 
-
     componentDidMount() {
         let currentUser = auth.currentUser;
-
 
         if (currentUser) {
             db.collection('users')
@@ -30,13 +26,12 @@ class Profile extends Component {
                             id: doc.id,
                             data: doc.data()
                         });
-                    })
+                    });
                     this.setState({
                         userData: userInfo[0].data,
                         loading: false,
                     });
                 });
-
 
             db.collection('posts')
                 .where("owner", "==", currentUser.email)
@@ -47,8 +42,6 @@ class Profile extends Component {
                             id: doc.id,
                             data: doc.data()
                         });
-
-
                     });
                     this.setState({
                         posts: arrDocs,
@@ -57,7 +50,6 @@ class Profile extends Component {
                 });
         }
     }
-
 
     deletePost = (id) => {
         db.collection("posts")
@@ -71,33 +63,37 @@ class Profile extends Component {
             });
     };
 
-
     logout() {
         this.props.navigation.navigate("Login");
         auth.signOut();
         this.setState({ loggedIn: false });
     }
 
-
     render() {
-        console.log(this.state.userData);
         return (
-            <View>
+            <View style={styles.profileContainer}>
                 {this.state.loading ? (
-                    <ActivityIndicator size='large' color='red' />
+                    <ActivityIndicator size="large" color="red" />
                 ) : (
                     <View>
-                       
-                        <Text style={styles.noCardTextTitle}>Hola {this.state.userData.username}</Text>
-                        <Text style={styles.noCardText}>Email: {this.state.userData.email}</Text>
-                        <Text style= {styles.noCardText}>Cantidad de posts: {this.state.posts.length}</Text>
+
+                        <View style={styles.headerContainer}>
+                            <Text style={styles.welcomeText}>Hola, {this.state.userData.username} 👋</Text>
+                            <Text style={styles.emailText}>{this.state.userData.email}</Text>
+                            <Text style={styles.postsCount}>
+                                Cantidad de posts: {this.state.posts.length}
+                            </Text>
+                        </View>
+
+
+                        <View style={styles.divider} />
 
 
                         {this.state.posts.length === 0 ? (
-                            <Text>No tienes posts!</Text>
+                            <Text style={styles.noPostsText}>No tenes posts todavía.</Text>
                         ) : (
                             <View>
-                                <Text style ={styles.noCardTextTitle}>Tus Posts:</Text>
+                                <Text style={styles.sectionTitle}>Tus Posts</Text>
                                 <FlatList
                                     data={this.state.posts}
                                     keyExtractor={(item) => item.id.toString()}
@@ -106,19 +102,24 @@ class Profile extends Component {
                                             <Text style={styles.ownerText}>Posteado por: {item.data.owner}</Text>
                                             <Text style={styles.descriptionText}>{item.data.description}</Text>
                                             <Text style={styles.dateText}>{new Date(item.data.createdAt).toLocaleString()}</Text>
-                                            <Text style={styles.likesCount}>Cantidad de likes: {item.data.likes.length}</Text>
-                                            <TouchableOpacity style={this.state.owner ? styles.deleteOn : styles.deleteOff} onPress={() => this.deletePost(item.id)}>
-                                                <AntDesign name="delete" size={22} color="dark-grey" />
+                                            <Text style={styles.likesCount}>Likes: {item.data.likes.length}</Text>
+                                            <TouchableOpacity
+                                                style={styles.deleteButton}
+                                                onPress={() => this.deletePost(item.id)}
+                                            >
+                                                <AntDesign name="delete" size={22} color="white" />
                                             </TouchableOpacity>
                                         </View>
                                     )}
-                                    style={{ flex: 1 }}
                                 />
                             </View>
                         )}
 
 
-                        <TouchableOpacity style={styles.logoutButton} onPress={() => this.logout()}>
+                        <TouchableOpacity
+                            style={styles.logoutButton}
+                            onPress={() => this.logout()}
+                        >
                             <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
                         </TouchableOpacity>
                     </View>
@@ -128,33 +129,53 @@ class Profile extends Component {
     }
 }
 
-
 const styles = StyleSheet.create({
     profileContainer: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f8fa',
+        backgroundColor: '#ffffff',
     },
-    profileTitle: {
+    headerContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    welcomeText: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        color: '#333',
     },
-    profileText: {
-        fontSize: 18,
-        marginBottom: 5,
+    emailText: {
+        fontSize: 16,
+        color: '#555',
+        marginTop: 5,
+    },
+    postsCount: {
+        fontSize: 14,
+        color: '#777',
+        marginTop: 5,
+    },
+    divider: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        marginVertical: 20,
     },
     noPostsText: {
-        fontSize: 18,
+        fontSize: 16,
         color: 'gray',
         textAlign: 'center',
         marginTop: 20,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
     },
     card: {
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 15,
-        marginVertical: 10,
+        marginBottom: 15,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -185,36 +206,18 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
     },
-    deleteButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
     logoutButton: {
-        backgroundColor: 'lightblue',
+        backgroundColor: '#FF5A5F',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
         marginTop: 20,
     },
     logoutButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
         fontSize: 18,
-        fontWeight: 'bold',
     },
-    noCardTextTitle: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        marginBottom: 5,
-        marginHorizontal: 5,
-    },
-    noCardText:{
-        fontSize: 14,
-        marginBottom: 10,
-        marginHorizontal:5,
-
-    }
 });
 
-
-
 export default Profile;
-
